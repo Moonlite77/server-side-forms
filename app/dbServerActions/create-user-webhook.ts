@@ -7,10 +7,12 @@ const sql = neon(process.env.DATABASE_URL!)
 export default async function SyncUserCreation(
   clerkId: string,
   email: string,
-  userType: "admin" | "user" = "user",
+  userType: "talent_seeker" | "job_seeker" = "job_seeker",
   metadata?: any,
 ) {
   try {
+    console.log(`Creating user with type: ${userType}`)
+
     // Call the Neon database function to create user
     const result = await sql`
       SELECT create_user_from_clerk(

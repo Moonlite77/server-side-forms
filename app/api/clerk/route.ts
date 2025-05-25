@@ -14,8 +14,14 @@ export async function POST(request: Request) {
       const clerkId = userData.id
       const email = userData.email_addresses?.[0]?.email_address
 
-      // Determine user type (you can customize this logic)
-      const userType = (userData.public_metadata?.user_type as "admin" | "user") || "user"
+      // Determine user type - common enum values are often: customer, admin, member, etc.
+      // Check your database enum for exact values
+      // Determine user type - must be either 'talent_seeker' or 'job_seeker'
+      const userType = (userData.public_metadata?.user_type as "talent_seeker" | "job_seeker") || "job_seeker"
+
+      // Validate user type against your enum
+      const validUserTypes = ["talent_seeker", "job_seeker"] as const
+      const finalUserType = validUserTypes.includes(userType as any) ? userType : "job_seeker"
 
       // Prepare metadata
       const metadata = {
@@ -32,8 +38,8 @@ export async function POST(request: Request) {
         return Response.json({ error: "Missing required user data" }, { status: 400 })
       }
 
-      // Call the sync function
-      await SyncUserCreation(clerkId, email, userType, metadata)
+      // Call the sync function with validated user type
+      await SyncUserCreation(clerkId, email, finalUserType, metadata)
 
       console.log("User synced successfully:", clerkId)
     }
