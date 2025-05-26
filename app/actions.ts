@@ -2,6 +2,8 @@
 
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
+import StoreImageBlob from "./dbServerActions/storeBlob"
+import StoreBlobURL from "./dbServerActions/store-blob-url"
 
 // Type for basic info data
 interface BasicInfoData {
@@ -561,7 +563,6 @@ export async function saveSecurityClearance(formData: FormData) {
 export async function generateAvatar(
   input: AvatarGenerationInput,
 ): Promise<{ success: boolean; imageUrl?: string; error?: string }> {
-
   console.log("Starting avatar generation...")
 
   try {
@@ -636,9 +637,39 @@ export async function generateAvatar(
       return { success: false, error: "No image URL in the response" }
     }
 
-    // Store the avatar data
+    // Download the image from DALL-E URL
+    console.log("Downloading image from DALL-E...")
+    const imageResponse = await fetch(imageUrl)
+    if (!imageResponse.ok) {
+      return { success: false, error: "Failed to download generated image" }
+    }
+
+    // Convert to buffer for blob storage
+    const imageBuffer = await imageResponse.arrayBuffer()
+
+    // Generate a unique filename
+    const timestamp = Date.now()
+    const filename = `avatars/${input.alias}-${timestamp}.png`
+
+    // Store image in Vercel Blob
+    console.log("Storing image in Vercel Blob...")
+    const blobResult = await StoreImageBlob(imageBuffer, filename)
+
+    if (!blobResult.success) {
+      return { success: false, error: "Failed to store image in blob storage" }
+    }
+
+    // Store the blob URL in the database
+    console.log("Storing blob URL in database...")
+    const dbResult = await StoreBlobURL(blobResult.url)
+
+    if (!dbResult.success) {
+      return { success: false, error: "Failed to store avatar URL in database" }
+    }
+
+    // Store the avatar data in cookies as backup
     const avatarData: AvatarData = {
-      imageUrl,
+      imageUrl: blobResult.url, // Use the blob URL instead of the temporary DALL-E URL
       prompt,
       generatedAt: new Date().toISOString(),
     }
@@ -653,9 +684,9 @@ export async function generateAvatar(
       httpOnly: true,
     })
 
-    console.log("Successfully generated avatar")
+    console.log("Successfully generated and stored avatar")
 
-    return { success: true, imageUrl }
+    return { success: true, imageUrl: blobResult.url }
   } catch (error: any) {
     console.error("Error generating avatar:", error)
     return { success: false, error: error.message || "An unexpected error occurred" }
