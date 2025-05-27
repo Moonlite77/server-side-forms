@@ -76,6 +76,22 @@ interface AvatarData {
   generatedAt: string
 }
 
+//Type for Availability input
+interface AvailabilityFormProps {
+  initialData?: {
+    monday?: string
+    tuesday?: string
+    wednesday?: string
+    thursday?: string
+    friday?: string
+    saturday?: string
+    sunday?: string
+    timezone?: string
+    notes?: string
+  }
+}
+
+
 // Type for avatar generation input
 interface AvatarGenerationInput {
   summary: string
@@ -696,6 +712,49 @@ export async function generateAvatar(
   }
 }
 
+export async function saveAvailability(formData: FormData) {
+  // Extract form data
+  const days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+
+  const availabilityData: Record<string, string> = {}
+
+  // Process each day
+  days.forEach((day) => {
+    const startTime = formData.get(`${day}-start`) as string
+    const endTime = formData.get(`${day}-end`) as string
+    const isUnavailable = formData.get(`${day}-unavailable`) === "on"
+
+    if (isUnavailable) {
+      availabilityData[day] = "unavailable"
+    } else if (startTime && endTime) {
+      availabilityData[day] = `${startTime}-${endTime}`
+    }
+  })
+
+  const timezone = formData.get("timezone") as string
+  const notes = formData.get("notes") as string
+
+  // Create data object
+  const data = {
+    ...availabilityData,
+    timezone: timezone || "America/New_York",
+    notes: notes || "",
+  }
+
+  // Store cookies() result in a variable
+  const cookieStore = await cookies()
+
+  // Save to cookies for now
+  cookieStore.set("jobSeekerAvailabilityInfo", JSON.stringify(data), {
+    path: "/",
+    maxAge: 60 * 60 * 24, // 1 day
+    httpOnly: true,
+  })
+
+  // Redirect to next step
+  redirect("/setup-job-seeker?step=7")
+}
+
 // Helper function to get saved data
 export async function getJobSeekerData() {
   // Store cookies() result in a variable
@@ -707,12 +766,14 @@ export async function getJobSeekerData() {
   const locationPrefsCookie = cookieStore.get("jobSeekerLocationPrefs")
   const clearanceCookie = cookieStore.get("jobSeekerClearance")
   const avatarCookie = cookieStore.get("jobSeekerAvatar")
+  const availabilityCookie = cookieStore.get("jobSeekerAvailabilityInfo")
 
   const basicInfo = basicInfoCookie ? JSON.parse(basicInfoCookie.value) : null
   const resumeData = resumeDataCookie ? JSON.parse(resumeDataCookie.value) : null
   const locationPrefs = locationPrefsCookie ? JSON.parse(locationPrefsCookie.value) : null
   const clearance = clearanceCookie ? JSON.parse(clearanceCookie.value) : null
   const avatar = avatarCookie ? JSON.parse(avatarCookie.value) : null
+  const availability = availabilityCookie ? JSON.parse(availabilityCookie.value) : null
 
   return {
     basicInfo,
@@ -720,6 +781,7 @@ export async function getJobSeekerData() {
     locationPrefs,
     clearance,
     avatar,
+    availability,
   }
 }
 

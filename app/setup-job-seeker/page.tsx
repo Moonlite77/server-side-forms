@@ -6,6 +6,7 @@ import VerifyParsedDataForm from "@/components/job-seeker-forms/verify-parsed-da
 import LocationAndWorkPreferencesForm from "@/components/job-seeker-forms/cc-and-work-preferences"
 import SecurityClearanceForm from "@/components/job-seeker-forms/security-clearance"
 import GenerateAvatar from "@/components/job-seeker-forms/generate-avatar"
+import AvailabilityForm from "@/components/job-seeker-forms/availabilityForm"
 import { getJobSeekerData } from "@/app/actions"
 
 // Use the provided type definitions
@@ -36,7 +37,7 @@ export default async function SetupJobSeeker({ searchParams }: PageProps) {
   const currentStepIndex = Number(step) - 1
 
   // Get saved data
-  const { basicInfo, resumeData, locationPrefs, clearance, avatar } = await getJobSeekerData()
+  const { basicInfo, resumeData, locationPrefs, clearance, availability, avatar } = await getJobSeekerData()
 
   console.log("Page loaded with step:", step)
   console.log("Resume data available:", !!resumeData)
@@ -50,7 +51,8 @@ export default async function SetupJobSeeker({ searchParams }: PageProps) {
     { id: 3, name: "Verify parsed data", path: "/setup-job-seeker?step=3" },
     { id: 4, name: "Location & Work", path: "/setup-job-seeker?step=4" },
     { id: 5, name: "Clearance", path: "/setup-job-seeker?step=5" },
-    { id: 6, name: "Generate Avatar", path: "/setup-job-seeker?step=6" },
+    { id: 6, name: "Availability", path: "/setup-job-seeker?step=6"},
+    { id: 7, name: "Generate Avatar", path: "/setup-job-seeker?step=7" },
   ]
 
   const isLastStep = currentStepIndex === steps.length - 1
@@ -82,11 +84,14 @@ export default async function SetupJobSeeker({ searchParams }: PageProps) {
       case 4:
         return <SecurityClearanceForm initialData={clearance} />
       case 5:
+        return <GenerateAvatar resumeData={availability}/>
+      case 6:
         return <GenerateAvatar resumeData={resumeData} basicInfo={basicInfo} />
       default:
         return <div>Unknown step</div>
     }
   }
+
 
   return (
     <div className="flex flex-col h-[92vh] w-full">
