@@ -107,7 +107,7 @@ export default async function SetupJobSeeker({ searchParams }: PageProps) {
                     >
                       <span className="flex items-center px-2 md:px-6 py-2">
                         <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-primary group-hover:bg-primary/90 transition-colors">
-                          <Check className="h-5 w-5 text-primary-foreground" />
+                          <span className="text-sm font-medium text-primary-foreground">{step.id}</span>
                         </span>
                         <span className="ml-3 text-sm font-medium text-foreground group-hover:text-foreground/90">
                           {step.name}
@@ -132,7 +132,7 @@ export default async function SetupJobSeeker({ searchParams }: PageProps) {
                       className="group flex w-full items-center p-0 h-auto hover:bg-muted/50 transition-colors rounded-lg"
                     >
                       <span className="flex items-center px-2 md:px-6 py-2">
-                        <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border-2 border-muted group-hover:border-muted-foreground/50 transition-colors">
+                        <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full group-hover:border-muted-foreground/50 transition-colors">
                           <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground/70">
                             {step.id}
                           </span>

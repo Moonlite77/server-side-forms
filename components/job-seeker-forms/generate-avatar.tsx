@@ -199,7 +199,7 @@ export default function GenerateAvatar({ resumeData, basicInfo }: GenerateAvatar
       </div>
 
       <div className="w-full pt-6 space-y-3">
-        <ServerButton href="/dashboard" className="w-full px-6 py-3 bg-red-800 text-white font-medium rounded-lg transition-all duration-200 hover:bg-red-900 hover:ring-2 hover:ring-red-400 hover:ring-opacity-50">
+        <ServerButton href="/dashboard" className="mx-auto block w-full px-6 py-3 bg-red-800 text-white font-medium rounded-lg transition-all duration-200 hover:bg-red-900 hover:ring-2 hover:ring-red-400 hover:ring-opacity-50">
           Complete Setup
         </ServerButton>
 

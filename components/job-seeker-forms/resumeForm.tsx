@@ -67,7 +67,7 @@ export default function ResumeForm({ userAlias = "User" }: ResumeFormProps) {
 
         <button
           type="submit"
-          className="px-6 py-3 bg-red-800 text-white font-medium rounded-lg transition-all duration-200 hover:bg-red-900 hover:ring-2 hover:ring-red-400 hover:ring-opacity-50"
+          className="mx-auto block px-6 py-3 bg-red-800 text-white font-medium rounded-lg transition-all duration-200 hover:bg-red-900 hover:ring-2 hover:ring-red-400 hover:ring-opacity-50"
         >
           Process Resume and Continue
         </button>
