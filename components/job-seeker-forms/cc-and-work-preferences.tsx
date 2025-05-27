@@ -141,7 +141,7 @@ export default function LocationAndWorkPreferencesForm({ initialData }: Location
 
         <button
           type="submit"
-          className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-md hover:bg-primary/90 transition-colors"
+          className="px-6 py-3 bg-red-800 text-white font-medium rounded-lg transition-all duration-200 hover:bg-red-900 hover:ring-2 hover:ring-red-400 hover:ring-opacity-50"
         >
           Save and Continue
         </button>
