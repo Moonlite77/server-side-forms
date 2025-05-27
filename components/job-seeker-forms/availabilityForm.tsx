@@ -115,17 +115,12 @@ export default function AvailabilityForm({ initialData }: AvailabilityFormProps)
         </div>
 
         <div className="flex justify-end space-x-4">
-          <button
-            type="button"
-            className="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
-          >
-            Cancel
-          </button>
+
           <button
             type="submit"
             className="mx-auto block px-6 py-3 bg-red-800 text-white font-medium rounded-lg transition-all duration-200 hover:bg-red-900 hover:ring-2 hover:ring-red-400 hover:ring-opacity-50"
           >
-            Save Availability
+            Save Availability and Continue
           </button>
         </div>
       </form>
