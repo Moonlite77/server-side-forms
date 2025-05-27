@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Check } from "lucide-react"
+import { Check } from "lucide-react"
 import { ServerButton } from "@/components/ui/button"
 import BasicInfoForm from "@/components/job-seeker-forms/basicInfoForm"
 import ResumeForm from "@/components/job-seeker-forms/resumeForm"
@@ -51,14 +51,12 @@ export default async function SetupJobSeeker({ searchParams }: PageProps) {
     { id: 3, name: "Verify parsed data", path: "/setup-job-seeker?step=3" },
     { id: 4, name: "Location & Work", path: "/setup-job-seeker?step=4" },
     { id: 5, name: "Clearance", path: "/setup-job-seeker?step=5" },
-    { id: 6, name: "Availability", path: "/setup-job-seeker?step=6"},
+    { id: 6, name: "Availability", path: "/setup-job-seeker?step=6" },
     { id: 7, name: "Generate Avatar", path: "/setup-job-seeker?step=7" },
   ]
 
   const isLastStep = currentStepIndex === steps.length - 1
   const currentStep = steps[currentStepIndex] || steps[0]
-  const prevStep = currentStepIndex > 0 ? steps[currentStepIndex - 1] : null
-  const nextStep = !isLastStep ? steps[currentStepIndex + 1] : null
 
   // Render the appropriate form based on the current step
   function renderStepContent() {
@@ -84,14 +82,13 @@ export default async function SetupJobSeeker({ searchParams }: PageProps) {
       case 4:
         return <SecurityClearanceForm initialData={clearance} />
       case 5:
-        return <AvailabilityForm initialData={availability}/>
+        return <AvailabilityForm initialData={availability} />
       case 6:
         return <GenerateAvatar resumeData={resumeData} basicInfo={basicInfo} />
       default:
         return <div>Unknown step</div>
     }
   }
-
 
   return (
     <div className="flex flex-col h-[92vh] w-full">
@@ -103,19 +100,25 @@ export default async function SetupJobSeeker({ searchParams }: PageProps) {
               {steps.map((step, index) => (
                 <li key={step.id} className="relative flex-1 min-w-[100px]">
                   {index < currentStepIndex ? (
-                    <div className="group flex w-full items-center">
-                      <span className="flex items-center px-2 md:px-6">
-                        <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-primary">
+                    <ServerButton
+                      href={step.path}
+                      variant="ghost"
+                      className="group flex w-full items-center p-0 h-auto hover:bg-muted/50 transition-colors rounded-lg"
+                    >
+                      <span className="flex items-center px-2 md:px-6 py-2">
+                        <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-primary group-hover:bg-primary/90 transition-colors">
                           <Check className="h-5 w-5 text-primary-foreground" />
                         </span>
-                        <span className="ml-3 text-sm font-medium text-foreground">{step.name}</span>
+                        <span className="ml-3 text-sm font-medium text-foreground group-hover:text-foreground/90">
+                          {step.name}
+                        </span>
                       </span>
                       {index < steps.length - 1 && <div className="h-0.5 w-full bg-primary" />}
-                    </div>
+                    </ServerButton>
                   ) : index === currentStepIndex ? (
                     <div className="group flex w-full items-center" aria-current="step">
-                      <span className="flex items-center px-2 md:px-6">
-                        <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border-2 border-primary">
+                      <span className="flex items-center px-2 md:px-6 py-2">
+                        <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border-2 border-primary bg-primary/10">
                           <span className="text-sm font-medium text-primary">{step.id}</span>
                         </span>
                         <span className="ml-3 text-sm font-medium text-foreground">{step.name}</span>
@@ -123,15 +126,23 @@ export default async function SetupJobSeeker({ searchParams }: PageProps) {
                       {index < steps.length - 1 && <div className="h-0.5 w-full bg-muted" />}
                     </div>
                   ) : (
-                    <div className="group flex w-full items-center">
-                      <span className="flex items-center px-2 md:px-6">
-                        <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border-2 border-muted">
-                          <span className="text-sm font-medium text-muted-foreground">{step.id}</span>
+                    <ServerButton
+                      href={step.path}
+                      variant="ghost"
+                      className="group flex w-full items-center p-0 h-auto hover:bg-muted/50 transition-colors rounded-lg"
+                    >
+                      <span className="flex items-center px-2 md:px-6 py-2">
+                        <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border-2 border-muted group-hover:border-muted-foreground/50 transition-colors">
+                          <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground/70">
+                            {step.id}
+                          </span>
                         </span>
-                        <span className="ml-3 text-sm font-medium text-muted-foreground">{step.name}</span>
+                        <span className="ml-3 text-sm font-medium text-muted-foreground group-hover:text-foreground/70">
+                          {step.name}
+                        </span>
                       </span>
                       {index < steps.length - 1 && <div className="h-0.5 w-full bg-muted" />}
-                    </div>
+                    </ServerButton>
                   )}
                 </li>
               ))}
@@ -141,37 +152,9 @@ export default async function SetupJobSeeker({ searchParams }: PageProps) {
       </div>
 
       {/* Content area - scrollable */}
-      <div className="flex-1 overflow-y-auto px-4 md:px-8 pb-24">
+      <div className="flex-1 overflow-y-auto px-4 md:px-8 pb-8">
         <div className="max-w-5xl mx-auto w-full py-4">
           <div className="bg-transparent rounded-lg p-6 border border-border">{renderStepContent()}</div>
-        </div>
-      </div>
-
-      {/* Navigation buttons - fixed at bottom */}
-      <div className="w-full px-4 py-4 md:px-8 bg-background border-t border-border">
-        <div className="max-w-5xl mx-auto flex justify-between">
-          {prevStep ? (
-            <ServerButton variant="outline" href={prevStep.path}>
-              <ChevronLeft className="mr-2 h-4 w-4" />
-              Previous
-            </ServerButton>
-          ) : (
-            <ServerButton variant="outline" disabled>
-              <ChevronLeft className="mr-2 h-4 w-4" />
-              Previous
-            </ServerButton>
-          )}
-
-          {nextStep && currentStepIndex !== 5 ? (
-            <ServerButton href={nextStep.path}>
-              Next
-              <ChevronRight className="ml-2 h-4 w-4" />
-            </ServerButton>
-          ) : currentStepIndex === 5 ? (
-            <div></div> // Empty div to maintain flex layout
-          ) : (
-            <ServerButton>Finish</ServerButton>
-          )}
         </div>
       </div>
     </div>
