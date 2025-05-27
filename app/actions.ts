@@ -12,6 +12,7 @@ interface BasicInfoData {
   openToFullTime: boolean
   openToContract: boolean
   openToSpeaking: boolean
+  career: string | null
 }
 
 // Type for location and work preferences data
@@ -91,6 +92,7 @@ export async function saveBasicInfo(formData: FormData) {
   const openToFullTime = formData.has("openToFullTime")
   const openToContract = formData.has("openToContract")
   const openToSpeaking = formData.has("openToSpeaking")
+  const career = formData.get("careerField") as string | null as string
 
   // Create data object
   const data: BasicInfoData = {
@@ -99,6 +101,7 @@ export async function saveBasicInfo(formData: FormData) {
     openToFullTime,
     openToContract,
     openToSpeaking,
+    career,
   }
 
   // Store cookies() result in a variable

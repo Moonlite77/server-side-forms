@@ -7,6 +7,7 @@ interface BasicInfoFormProps {
     openToFullTime?: boolean
     openToContract?: boolean
     openToSpeaking?: boolean
+    careerField?: string
   }
 }
 
