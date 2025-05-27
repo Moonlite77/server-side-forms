@@ -84,7 +84,7 @@ export default async function SetupJobSeeker({ searchParams }: PageProps) {
       case 4:
         return <SecurityClearanceForm initialData={clearance} />
       case 5:
-        return <GenerateAvatar resumeData={availability}/>
+        return <AvailabilityForm initialData={availability}/>
       case 6:
         return <GenerateAvatar resumeData={resumeData} basicInfo={basicInfo} />
       default:
