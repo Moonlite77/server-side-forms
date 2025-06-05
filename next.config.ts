@@ -19,6 +19,7 @@ const nextConfig: NextConfig = {
   experimental: {
     serverActions: {
       allowedOrigins: ['localhost:3000'],
+      bodySizeLimit: '4mb',
     },
   },
   // Moved from experimental.serverComponentsExternalPackages to root level
