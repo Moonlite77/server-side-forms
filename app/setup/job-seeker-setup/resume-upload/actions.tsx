@@ -1,0 +1,167 @@
+"use server";
+
+import { promises as fs } from "fs";
+import { v4 as uuidv4 } from "uuid";
+import PDFParser from "pdf2json";
+import { put } from "@vercel/blob";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+// Define the BasicResumeResult type
+export type BasicResumeResult = {
+  success: boolean;
+  error?: string;
+  data?: {
+    cleanedResume: string;
+    resumeSummary: string;
+    topTenSkills: string[];
+    lastTimeFullTimeEmployed: string | "current" | "never";
+    yearsOfExperience: number;
+    completedStepTwo: boolean;
+    resumeUrl?: string;
+  };
+};
+
+export async function ParsePDF(
+  prevState: BasicResumeResult | null,
+  formData: FormData
+): Promise<BasicResumeResult> {
+  const uploadedFiles = formData.getAll("FILE");
+  let fileName = "";
+  let parsedText = "";
+  let resumeUrl = "";
+
+  if (!uploadedFiles || uploadedFiles.length === 0) {
+    console.log("No files found.");
+    return {
+      success: false,
+      error: "No files found",
+    };
+  }
+
+  const uploadedFile = uploadedFiles[0];
+  console.log("Uploaded file:", uploadedFile);
+
+  if (!(uploadedFile instanceof File)) {
+    console.log("Uploaded file is not in the expected format.");
+    return {
+      success: false,
+      error: "Uploaded file is not in the expected format",
+    };
+  }
+
+  fileName = uuidv4();
+  const tempFilePath = `/tmp/${fileName}.pdf`;
+
+  try {
+    // Convert file to buffer and write to temp location
+    const fileBuffer = Buffer.from(await uploadedFile.arrayBuffer());
+    await fs.writeFile(tempFilePath, fileBuffer);
+
+    // Upload to Vercel Blob Store
+    const blob = await put(`resumes/${fileName}.pdf`, fileBuffer, {
+      access: "public",
+      contentType: "application/pdf",
+    });
+    resumeUrl = blob.url;
+
+    // Parse PDF
+    const pdfParser = new (PDFParser as any)(null, 1);
+
+    await new Promise<void>((resolve, reject) => {
+      pdfParser.on("pdfParser_dataError", (errData: any) => {
+        console.log(errData.parserError);
+        reject(errData.parserError);
+      });
+
+      pdfParser.on("pdfParser_dataReady", () => {
+        parsedText = (pdfParser as any).getRawTextContent();
+        resolve();
+      });
+
+      pdfParser.loadPDF(tempFilePath);
+    });
+
+    // Clean up the temp file
+    await fs.unlink(tempFilePath).catch(console.error);
+
+    // Initialize Google Gemini
+    const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY!);
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+
+    // Prepare the prompt
+    const prompt = `You are a resume parsing and analysis AI. Your task is to extract specific information from a provided resume text and format it as a JSON object.
+
+Here's the JSON schema you must adhere to:
+\`\`\`json
+{
+  "cleanedResume": "string",
+  "resumeSummary": "string",
+  "topTenSkills": ["skillOne: string", "skillTwo: string", "... skillTen: string"],
+  "lastTimeFullTimeEmployed": "date | \"current\" | \"never\"",
+  "yearsOfExperience": "number"
+}
+\`\`\`
+
+Here are the detailed instructions for each field:
+
+cleanedResume: Provide the entire resume text with absolutely no mention of the applicant's name or contact information (e.g., phone numbers, email addresses, physical addresses, LinkedIn profiles, personal websites). This is a critical requirement.
+
+resumeSummary: Generate a concise summary of the applicant's professional profile. This summary must be limited to 200 words and must not contain any mention of the applicant's name or contact information.
+
+topTenSkills: Identify the applicant's top 10 strongest skills. List them in descending order of strength (strongest skill first, 2nd strongest second, and so on). Each skill must be a string. No skill can have more than 5 words or exceed 60 characters in length.
+
+lastTimeFullTimeEmployed: Determine the date of the applicant's most recent full-time employment.
+- If the applicant is currently employed full-time, set this value to "current".
+- If the applicant has never been full-time employed, set this value to "never".
+- Otherwise, provide the date in YYYY-MM-DD format (e.g., 2023-08-15). Prioritize the end date of their last full-time role if it's in the past.
+
+yearsOfExperience: Calculate the total years of professional experience based on the provided resume. This should be a numerical value. Round to the nearest whole number.
+
+Resume to parse:
+${parsedText}
+
+Return ONLY the JSON object with no additional text or markdown formatting.`;
+
+    // Send to Gemini and get response
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+
+    // Parse the JSON response
+    let resumeData;
+    try {
+      // Remove any potential markdown code blocks
+      const jsonString = text.replace(/```json\n?|\n?```/g, "").trim();
+      resumeData = JSON.parse(jsonString);
+    } catch (parseError) {
+      console.error("Failed to parse Gemini response:", parseError);
+      return {
+        success: false,
+        error: "Failed to parse AI response",
+      };
+    }
+
+    // Return the structured data with completedStepTwo flag
+    return {
+      success: true,
+      data: {
+        cleanedResume: resumeData.cleanedResume,
+        resumeSummary: resumeData.resumeSummary,
+        topTenSkills: resumeData.topTenSkills,
+        lastTimeFullTimeEmployed: resumeData.lastTimeFullTimeEmployed,
+        yearsOfExperience: resumeData.yearsOfExperience,
+        completedStepTwo: true,
+        resumeUrl: resumeUrl,
+      },
+    };
+  } catch (error) {
+    // Clean up the temp file on error
+    await fs.unlink(tempFilePath).catch(console.error);
+
+    console.error("Error processing PDF:", error);
+    return {
+      success: false,
+      error: "Failed to process PDF: " + (error as Error).message,
+    };
+  }
+}
