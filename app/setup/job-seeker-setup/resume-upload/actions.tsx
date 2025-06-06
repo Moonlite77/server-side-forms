@@ -86,7 +86,7 @@ export async function ParsePDF(
 
     // Initialize Google Gemini
     const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY!);
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
     // Prepare the prompt
     const prompt = `You are a resume parsing and analysis AI. Your task is to extract specific information from a provided resume text and format it as a JSON object.
