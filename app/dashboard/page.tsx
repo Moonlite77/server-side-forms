@@ -47,7 +47,7 @@ export default async function DashboardPage() {
         </div>
 
         <div className="w-full max-w-xs">
-          <Link href="/dashboard/setup-options" className="w-full inline-block">
+          <Link href="/setup" className="w-full inline-block">
             <button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 py-2 rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none">
               Setup
             </button>

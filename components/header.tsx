@@ -11,7 +11,7 @@ import {
 
 export default function Header() {
   return (
-    <header className="sticky top-0 z-50 w-full bg-black">
+    <header className="sticky top-0 z-50 w-full">
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:h-[8vh]">
         {/* Logo */}
         <Link href="/" className="flex items-center">
