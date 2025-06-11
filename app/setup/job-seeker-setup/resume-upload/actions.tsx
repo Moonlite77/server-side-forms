@@ -122,6 +122,9 @@ ${parsedText}
 
 Return ONLY the JSON object with no additional text or markdown formatting.`;
 
+//print the text prompt being sent to Gemini
+console.log(prompt)
+
     // Send to Gemini and get response
     const result = await model.generateContent(prompt);
     const response = await result.response;
@@ -133,6 +136,8 @@ Return ONLY the JSON object with no additional text or markdown formatting.`;
       // Remove any potential markdown code blocks
       const jsonString = text.replace(/```json\n?|\n?```/g, "").trim();
       resumeData = JSON.parse(jsonString);
+      //print the reply we're getting back.
+      console.log(resumeData)
     } catch (parseError) {
       console.error("Failed to parse Gemini response:", parseError);
       return {
