@@ -18,7 +18,11 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     serverActions: {
-      allowedOrigins: ['localhost:3000'],
+      allowedOrigins: [
+        'localhost:3000',
+        'fast-stag-26.clerk.accounts.dev',
+        'api.clerk.com'
+      ],
       bodySizeLimit: '4mb',
     },
   },
