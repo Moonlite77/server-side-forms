@@ -30,7 +30,7 @@ export default function Header() {
               />
             </svg>
           </div>
-          <span className="font-bold text-xl">MyApp</span>
+          <span className="font-bold text-xl ">Talent Vault</span>
         </Link>
 
         {/* Navigation Links - Desktop */}

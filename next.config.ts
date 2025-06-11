@@ -20,7 +20,6 @@ const nextConfig: NextConfig = {
     serverActions: {
       allowedOrigins: [
         'localhost:3000',
-        'trusty-weasel-44.clerk.accounts.dev',
         'api.clerk.com'
       ],
       bodySizeLimit: '4mb',
