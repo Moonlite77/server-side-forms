@@ -6,6 +6,7 @@ import {
   SignedOut,
   UserButton,
 } from '@clerk/nextjs'
+import { Shield, Lock, SaveIcon as Safe, Vault, Archive, Box } from 'lucide-react'
 // This would normally come from your auth provider
 // For demo purposes, we'll just use a dummy value
 
@@ -16,29 +17,17 @@ export default function Header() {
         {/* Logo */}
         <Link href="/" className="flex items-center">
           <div className="relative h-8 w-8 mr-2">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              className="h-8 w-8 text-gray-900"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-              />
-            </svg>
+            <Vault />
           </div>
           <span className="font-bold text-xl ">Talent Vault</span>
         </Link>
 
         {/* Navigation Links - Desktop */}
         <nav className="hidden md:flex items-center space-x-8">
-          <Link href="/dashboard" className="text-gray-700 hover:text-gray-900 transition-colors">
+          <Link href="/dashboard" className="text-2xl font-black tracking-tight">
             Dashboard
           </Link>
-          <Link href="/vault" className="text-gray-700 hover:text-gray-900 transition-colors">
+          <Link href="/vault" className="text-2xl font-black tracking-tight">
            Vault
           </Link>
         </nav>
