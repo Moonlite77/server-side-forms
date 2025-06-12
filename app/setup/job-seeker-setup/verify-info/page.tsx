@@ -71,8 +71,8 @@ export default function VerifyInfoPage() {
     }, [resumeText, toast]);
 
     function continueNextStep() {
-        // Send user to availability page
-        router.push("/setup/job-seeker-setup/availability");
+        // Send user to preferences page
+        router.push("/setup/job-seeker-setup/location-work-pref");
     }
 
     function handleResubmit(e: React.FormEvent) {

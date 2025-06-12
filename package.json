@@ -11,6 +11,7 @@
   "dependencies": {
     "@clerk/nextjs": "^6.19.5",
     "@google/generative-ai": "^0.24.1",
+    "@googlemaps/google-maps-services-js": "^3.4.1",
     "@neondatabase/serverless": "^1.0.0",
     "@radix-ui/react-alert-dialog": "^1.1.14",
     "@radix-ui/react-dialog": "^1.1.14",
