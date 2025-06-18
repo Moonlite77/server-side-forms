@@ -96,31 +96,31 @@ Here's the JSON schema you must adhere to:
 {
   "cleanedResume": "string",
   "resumeSummary": "string",
-  "topTenSkills": ["skillOne: string", "skillTwo: string", "... skillTen: string"],
-  "lastTimeFullTimeEmployed": "date | \"current\" | \"never\"",
+  "topTenSkills": ["string"],
+  "lastTimeFullTimeEmployed": "string",
   "yearsOfExperience": "number"
 }
 \`\`\`
 
 Here are the detailed instructions for each field:
 
-cleanedResume: Provide the entire resume text with absolutely no mention of the applicant's name or contact information (e.g., phone numbers, email addresses, physical addresses, LinkedIn profiles, personal websites). This is a critical requirement.
+- **cleanedResume**: Provide the entire resume text. CRITICAL: You must remove all mentions of the applicant's name and contact information (phone, email, address, LinkedIn, websites). The output for this field must be a valid JSON string, which means all special characters (like newlines or quotes) must be properly escaped (e.g., \\n for newlines).
 
-resumeSummary: Generate a concise summary of the applicant's professional profile. This summary must be limited to 200 words and must not contain any mention of the applicant's name or contact information.
+- **resumeSummary**: Generate a concise summary of the applicant's professional profile, limited to 200 words. Do not include any name or contact information. Ensure this is a valid JSON string with proper escaping.
 
-topTenSkills: Identify the applicant's top 10 strongest skills. List them in descending order of strength (strongest skill first, 2nd strongest second, and so on). Each skill must be a string. No skill can have more than 5 words or exceed 60 characters in length.
+- **topTenSkills**: Identify the top 10 strongest skills. List them in descending order of strength. Each skill must be a string, no more than 5 words or 60 characters.
 
-lastTimeFullTimeEmployed: Determine the date of the applicant's most recent full-time employment.
-- If the applicant is currently employed full-time, set this value to "current".
-- If the applicant has never been full-time employed, set this value to "never".
-- Otherwise, provide the date in YYYY-MM-DD format (e.g., 2023-08-15). Prioritize the end date of their last full-time role if it's in the past.
+- **lastTimeFullTimeEmployed**: Determine the most recent full-time employment date.
+  - If currently employed full-time, use "current".
+  - If never full-time employed, use "never".
+  - Otherwise, use YYYY-MM-DD format.
 
-yearsOfExperience: Calculate the total years of professional experience based on the provided resume. This should be a numerical value. Round to the nearest whole number.
+- **yearsOfExperience**: Calculate the total years of professional experience as a number. Round to the nearest whole number.
 
 Resume to parse:
 ${parsedText}
 
-Return ONLY the JSON object with no additional text or markdown formatting.`;
+Return ONLY the JSON object. Do not use markdown formatting. Ensure the entire output is a single, valid JSON object.`;
 
 //print the text prompt being sent to Gemini
 console.log(prompt)
@@ -139,10 +139,12 @@ console.log(prompt)
       //print the reply we're getting back.
       console.log(resumeData)
     } catch (parseError) {
-      console.error("Failed to parse Gemini response:", parseError);
+       console.error("Failed to parse Gemini response:", parseError);
+      // Log the problematic text to see what Gemini is returning
+      console.error("Problematic Gemini response text:", text);
       return {
         success: false,
-        error: "Failed to parse AI response",
+        error: "Failed to parse AI response. The response was not valid JSON.",
       };
     }
 
