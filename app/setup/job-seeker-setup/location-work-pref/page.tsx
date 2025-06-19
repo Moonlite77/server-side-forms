@@ -102,7 +102,7 @@ export default function LocationWorkPrefPage(){
                         <label>Remote Only</label>
                         <input type="checkbox" value="true" name="remoteOnly" id="remoteOnly" defaultChecked={persistedData?.remoteOnly === true}/>
                     </div>             
-                <button className="border" type="submit">Submit</button>
+                <button className="border" type="submit">Save and Continue</button>
                 <div>{isPending ? "Loading..." : ""}</div>
             </form>
         </div>

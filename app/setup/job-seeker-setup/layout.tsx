@@ -29,7 +29,7 @@ export default function JobSeekerSetupLayout({
           <JobSeekerStepper />
         </div>
       </div>
-      <div className="py-2">
+      <div className="h-100 py-2">
         {children}
       </div>
       </DataContext.Provider>
