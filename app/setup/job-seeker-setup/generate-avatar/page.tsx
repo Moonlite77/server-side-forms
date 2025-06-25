@@ -3,13 +3,26 @@ import { useState, useActionState, useEffect, startTransition } from 'react'
 import { useRouter } from "next/navigation"
 import LilRedSpinner from "@/components/ui/lilRedSpinner";
 import generateAvatar from "./actions"
-
-
-
+import { useUser } from "@clerk/nextjs";
 
 //made this an async function in order to get the user (auth)
 export default async function GenerateAvatarPage(){
     //Getting the user
+    const { user, isLoaded, isSignedIn } = useUser();
+
+    //making sure they're logged in
+        if (!isLoaded) {
+        // Handle loading state
+        return <div>Loading...</div>;
+    }
+    
+    if (!isSignedIn) {
+        // Handle signed out state
+        return <div>Please sign in</div>;
+    }
+    
+    // Access the userId
+    const userId = user.id
 
 
     //things we need to display to user
@@ -80,7 +93,7 @@ export default async function GenerateAvatarPage(){
 
     //seperating the function out for readability
     async function generateAvatarPlease(){
-        const successResult = await generateAvatar(userBasicInfo, userResumeInfo, userWorkPrefs, userAvailability, userClearanceInfo,)
+        const successResult = await generateAvatar(userBasicInfo, userResumeInfo, userWorkPrefs, userAvailability, userClearanceInfo, userId)
         return successResult.success
     }
 
