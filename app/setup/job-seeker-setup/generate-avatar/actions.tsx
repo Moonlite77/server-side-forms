@@ -245,7 +245,7 @@ export default async function generateAvatar(
                 throw new Error(`User with ID ${userId} not found`);
             }
         
-        return result[0];
+        return {success: true};
 
         } catch (error) {
             console.error('Error updating avatar URL:', error);
