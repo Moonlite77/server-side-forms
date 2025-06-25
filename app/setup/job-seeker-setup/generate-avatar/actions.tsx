@@ -4,7 +4,7 @@ import OpenAI from "openai";
 import { writeFile } from "fs/promises";
 import { put } from '@vercel/blob';
 import { neon } from '@neondatabase/serverless';
-import { auth } from '@clerk/nextjs/server'
+
 
 //all the things we'll be sending to server action
 type userInfo = {
