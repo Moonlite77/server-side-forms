@@ -194,7 +194,7 @@ export default async function generateAvatar(
         }
 
         //Construct prompt to send to Dall-e 3
-        const dallePrompt = `Please create an image of a Dark Surrealism anime style character, who is a/an ${characterDevelopementStage}. This character exists in a mythological world and has to fight demons with ${characterWeapon}. Show them in Action.`
+        const dallePrompt = `Please create an image of a Dark Surrealism anime style character, who is a/an ${characterDevelopementStage}. This character exists in a mythological world and has a ${characterWeapon}. Show them in Action.`
         
         //print the prompt we're trying send
         console.log(dallePrompt)
