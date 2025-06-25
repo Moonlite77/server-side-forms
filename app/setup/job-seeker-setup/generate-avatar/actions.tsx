@@ -200,7 +200,7 @@ export default async function generateAvatar(
         console.log(dallePrompt)
 
         //create an image creation request using the prompt
-        const img = await client.images.generate({
+        const dalleResponse = await client.images.generate({
             model: "dall-e-3",
             prompt: dallePrompt,
             n: 1,
@@ -208,12 +208,15 @@ export default async function generateAvatar(
             response_format: "b64_json"
             });
 
+        const img = dalleResponse.data;
+
         //make sure img is not empty and put it in a buffer
 
-        if (!img.data || img.data.length === 0) {
-            throw new Error('No image data received');
-            }
-        const imageBuffer = Buffer.from(img.data?.[0]?.b64_json ?? '', "base64");
+        if (!img || img.length === 0) {
+        throw new Error("No image data received");
+        }
+
+        const imageBuffer = Buffer.from(img[0]?.b64_json ?? '', "base64");
 
         //create a file name for the blob
         const blobName = `generated-image-${Date.now()}.png`;
