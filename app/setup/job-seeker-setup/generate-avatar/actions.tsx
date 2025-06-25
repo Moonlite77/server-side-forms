@@ -221,7 +221,7 @@ export default async function generateAvatar(
         //create a file name for the blob
         const blobName = `generated-image-${Date.now()}.png`;
 
-        const blob = await put("avatars/", imageBuffer, {
+        const blob = await put(`avatars/${blobName}`, imageBuffer, {
             access: 'public',
             contentType: 'image/png'
         });
