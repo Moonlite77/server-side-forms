@@ -204,7 +204,8 @@ export default async function generateAvatar(
             model: "dall-e-3",
             prompt: dallePrompt,
             n: 1,
-            size: "1024x1024"
+            size: "1024x1024",
+            response_format: "b64_json"
             });
 
         //make sure img is not empty and put it in a buffer
