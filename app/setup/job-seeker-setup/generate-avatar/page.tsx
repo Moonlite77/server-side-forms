@@ -4,65 +4,13 @@ import { useRouter } from "next/navigation"
 import LilRedSpinner from "@/components/ui/lilRedSpinner";
 import generateAvatar from "./actions"
 
-//useful types
-type StoredBasicInfo = {
-    firstName: string;
-    lastName: string;
-    careerField: string;
-    alias: string;
-    fullTime: boolean;
-    contract: boolean;
-    speaker: boolean;
-    stepOne: string;
-};
-
-type StoredResumeInfo = {
-  cleanedResume: string;
-  resumeSummary: string;
-  topTenSkills: string[];
-  lastTimeFullTimeEmployed: string | "current" | "never";
-  yearsOfExperience: number;
-  completedStepTwo: boolean;
-  resumeUrl?: string;
-};
-
-type StoredPrefs = {
-    location: string
-    relocate: boolean
-    usCitizen: boolean
-    remoteOnly: boolean
-    completedStepFour: boolean
-}
-
-type StoredAvailability = {
-  timezone: string
-  mondayStart: string
-  mondayEnd: string
-  tuesdayStart: string
-  tuesdayEnd: string
-  wednesdayStart: string
-  wednesdayEnd: string
-  thursdayStart: string
-  thursdayEnd: string
-  fridayStart: string
-  fridayEnd: string
-  saturdayStart: string
-  saturdayEnd: string
-  sundayStart: string
-  sundayEnd: string
-  availabilityNote: string
-  completedStepFive?: boolean
-}
-
-type clearanceInfo = {
-    clearanceLevel: string;
-    clearanceStatus: string;
-    ableAndWilling: string;
-    completedStepSix?: boolean;
-};
 
 
-export default function GenerateAvatarPage(){
+
+//made this an async function in order to get the user (auth)
+export default async function GenerateAvatarPage(){
+    //Getting the user
+
 
     //things we need to display to user
     const [alias, setAlias] = useState("")
@@ -81,7 +29,7 @@ export default function GenerateAvatarPage(){
     //ActionState for button. MUST use useActionState.
     const [state, action, pending] = useActionState(generateAvatarPlease, false)
 
-    //useEffect to send user to dashbaord if state is true
+    //useEffect to send user to dashboard if state is true
     useEffect(()=>{
         if(state){
             router.push('/dashboard');
@@ -132,7 +80,7 @@ export default function GenerateAvatarPage(){
 
     //seperating the function out for readability
     async function generateAvatarPlease(){
-        const successResult = await generateAvatar(userBasicInfo, userResumeInfo, userWorkPrefs, userAvailability, userClearanceInfo)
+        const successResult = await generateAvatar(userBasicInfo, userResumeInfo, userWorkPrefs, userAvailability, userClearanceInfo,)
         return successResult.success
     }
 
