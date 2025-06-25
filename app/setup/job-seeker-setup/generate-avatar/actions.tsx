@@ -201,7 +201,7 @@ export default async function generateAvatar(
 
         //create an image creation request using the prompt
         const img = await client.images.generate({
-            model: "gpt-image-1",
+            model: "dall-e-3",
             prompt: dallePrompt,
             n: 1,
             size: "1024x1024"
