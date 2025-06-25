@@ -4,6 +4,7 @@ import OpenAI from "openai";
 import { writeFile } from "fs/promises";
 import { put } from '@vercel/blob';
 import { neon } from '@neondatabase/serverless';
+import { auth } from '@clerk/nextjs/server'
 
 
 //all the things we'll be sending to server action
@@ -112,12 +113,12 @@ export default async function generateAvatar(
     console.log("generate avatar server function was hit. Beginning Avatar Generation Process!")
 
     //Getting user
-    //const { userId } = await auth()
+    const { userId } = await auth()
 
     //if null, user is not signed in
-    /*if (!userId) {
+    if (!userId) {
         throw new Error('User not signed in.');
-    } */
+    } 
 
 
     //creating openai client
@@ -232,13 +233,13 @@ export default async function generateAvatar(
             const result = await sql`
                 UPDATE users 
                 SET avatar_url = ${blob.url} 
-                WHERE clerk_id = 'user_2yjlPJeskt1vzXLrKnImrEklfYp'
+                WHERE clerk_id = ${userId}
                 RETURNING *
             `;
             
-           /*if (result.length === 0) {
+           if (result.length === 0) {
                 throw new Error(`User with ID ${userId} not found`);
-            } */
+            }
         
         return result[0];
 

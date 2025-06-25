@@ -5,14 +5,7 @@ import LilRedSpinner from "@/components/ui/lilRedSpinner";
 import generateAvatar from "./actions"
 
 
-//made this an async function in order to get the user (auth)
-export default async function GenerateAvatarPage(){
-    //Getting the user
-
-
-    
-    // Access the userId
-
+export default function GenerateAvatarPage(){
 
 
     //things we need to display to user
