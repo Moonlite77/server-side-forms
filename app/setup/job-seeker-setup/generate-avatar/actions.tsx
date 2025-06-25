@@ -108,7 +108,7 @@ export default async function generateAvatar(
   userWorkPrefs: string | null,
   userAvailability: string | null,
   userClearanceInfo: string | null,
-  userId: string | null,
+  userId: string | null | undefined,
 ) {
     console.log("generate avatar server function was hit. Beginning Avatar Generation Process!")
 
